@@ -22,8 +22,6 @@ const App = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [imagesSet, setImagesSet] = useState([]);
   const [page, setPage] = useState(1);
-  // eslint-disable-next-line no-unused-vars
-  const [totalImages, setTotalImages] = useState(0);
   const [largeImageURL, setLargeImageURL] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [status, setStatus] = useState(Status.IDLE);
@@ -35,43 +33,33 @@ const App = () => {
       try {
         const { hits, totalHits } = await findImages(searchQuery, page);
         if (totalHits === 0) {
-          rejectedStatusHandler();
+          setStatus('rejected');
           showIncorrectQuery(searchQuery);
           return;
         }
 
         if (page === 1) {
-          setTotalImages(totalHits);
           showSearchResult(totalHits);
         }
-        const showButton = page < Math.ceil(totalHits / 12);
 
         setImagesSet(prevImagesSet => [...prevImagesSet, ...hits]);
-        setStatus(Status.RESOLVED);
-        setShowBtn(showButton);
+        setStatus('resolved');
+        setShowBtn(page < Math.ceil(totalHits / 12));
         makeSmoothScroll();
       } catch (error) {
-        console.log(error);
-        rejectedStatusHandler();
-        showQueryError(error);
+        setStatus('rejected');
       }
     };
 
     if (searchQuery.trim() !== '') {
-      setStatus(Status.PENDING);
+      setStatus('pending');
       fetchData();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchQuery, page]);
 
-  const rejectedStatusHandler = () => {
-    setStatus(Status.REJECTED);
-    setStatus(Status.IDLE);
-  };
-
-  function showSearchResult(totalImages) {
+  const showSearchResult = totalImages => {
     toast.success(`Hooray! We found ${totalImages} images.`);
-  }
+  };
 
   const showIncorrectQuery = searchQuery => {
     toast.error(
@@ -79,9 +67,9 @@ const App = () => {
     );
   };
 
-  const showQueryError = error => {
-    toast.error(`You caught the following error: ${error.message}.`);
-  };
+  // const showQueryError = error => {
+  //   toast.error(`You caught the following error: ${error.message}.`);
+  // };
 
   const onFormSubmit = newSearchQuery => {
     setSearchQuery(newSearchQuery);
@@ -111,16 +99,14 @@ const App = () => {
         <FrontNotification text="Type your image request in searchbar and get an awesome collection of pictures." />
       )}
       {status === Status.PENDING && <Loader />}
-      {status === Status.RESOLVED && (
+      {imagesSet.length > 0 && (
         <>
           <ImageGallery
             imagesSet={imagesSet}
             onClick={toggleModal}
             scrollRef={galleryElem}
           />
-          {imagesSet.length > page * 12 && showBtn && (
-            <Button onClick={onLoadBtnClick} />
-          )}
+          {showBtn && <Button onClick={onLoadBtnClick} />}
 
           {showModal && (
             <Modal
