@@ -66,7 +66,7 @@ const App = () => {
 
   const rejectedStatusHandler = () => {
     setStatus(Status.REJECTED);
-    // setStatus(Status.IDLE);
+    setStatus(Status.IDLE);
   };
 
   function showSearchResult(totalImages) {
