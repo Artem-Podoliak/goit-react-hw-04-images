@@ -116,7 +116,7 @@ const App = () => {
             onClick={toggleModal}
             scrollRef={galleryElem}
           />
-          {imagesSet.length > page && showBtn && (
+          {imagesSet.length > page * 12 && showBtn && (
             <Button onClick={onLoadBtnClick} />
           )}
 
