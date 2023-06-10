@@ -22,6 +22,7 @@ const App = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [imagesSet, setImagesSet] = useState([]);
   const [page, setPage] = useState(1);
+  // eslint-disable-next-line no-unused-vars
   const [totalImages, setTotalImages] = useState(0);
   const [largeImageURL, setLargeImageURL] = useState('');
   const [showModal, setShowModal] = useState(false);
@@ -40,7 +41,7 @@ const App = () => {
         }
 
         if (page === 1) {
-          setTotalImages(totalHits); // Update totalImages with the totalHits value
+          setTotalImages(totalHits);
           showSearchResult(totalHits);
         }
         const showButton = page < Math.ceil(totalHits / 12);
@@ -60,6 +61,7 @@ const App = () => {
       setStatus(Status.PENDING);
       fetchData();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchQuery, page]);
 
   const rejectedStatusHandler = () => {
@@ -67,9 +69,9 @@ const App = () => {
     // setStatus(Status.IDLE);
   };
 
-  const showSearchResult = totalImages => {
+  function showSearchResult(totalImages) {
     toast.success(`Hooray! We found ${totalImages} images.`);
-  };
+  }
 
   const showIncorrectQuery = searchQuery => {
     toast.error(
