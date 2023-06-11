@@ -33,6 +33,7 @@ const App = () => {
       try {
         const { hits, totalHits } = await findImages(searchQuery, page);
         if (totalHits === 0) {
+          console.log(totalHits);
           setStatus('rejected');
           showIncorrectQuery(searchQuery);
           return;
@@ -47,7 +48,8 @@ const App = () => {
         setShowBtn(page < Math.ceil(totalHits / 12));
         makeSmoothScroll();
       } catch (error) {
-        setStatus('rejected');
+        console.log(error);
+        // setStatus('rejected');
       }
     };
 
@@ -67,6 +69,7 @@ const App = () => {
     );
   };
 
+  // // eslint-disable-next-line no-unused-vars
   // const showQueryError = error => {
   //   toast.error(`You caught the following error: ${error.message}.`);
   // };
